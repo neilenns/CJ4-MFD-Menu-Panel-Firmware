@@ -4,7 +4,7 @@
     "Device": "atmega328p",
     "BaudRate": "115200",
     "Programmer": "arduino",
-    "FirmwareBaseName": "mobiflight_nano"
+    "FirmwareBaseName": "mobiflight_micro"
   },
   "Connection": {
     "ConnectionDelay": 1750,
@@ -15,12 +15,12 @@
     "ForceResetOnFirmwareUpdate": false,
     "MessageSize": 32
   },
-  "HardwareIds": ["^VID_1A86&PID_7523"],
+  "HardwareIds": ["^VID_1B4F&PID_9206"],
   "Info": {
     "CanInstallFirmware": true,
-    "FriendlyName": "Arduino Nano",
+    "FriendlyName": "Arduino Micro",
     "LatestFirmwareVersion": "0.0.1",
-    "MobiFlightType": "MobiFlight Nano"
+    "MobiFlightType": "CJ4 MFD panel"
   },
   "ModuleLimits": {
     "MaxAnalogInputs": 2,
