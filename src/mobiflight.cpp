@@ -39,6 +39,7 @@ constexpr uint8_t BRIGHTNESS_PIN = ButtonNames::ButtonCount;
 
 // Other defines.
 constexpr unsigned long POWER_SAVING_TIME_SECS = 60 * 60; // One hour (60 minutes * 60 seconds).
+constexpr unsigned long PRESS_AND_HOLD_LENGTH_MS = 500;   // Length of time a key must be held for a long press.
 
 unsigned long lastButtonPress = 0;
 bool powerSavingMode = false;
@@ -165,13 +166,31 @@ void generateSerial(bool force)
  */
 void OnButtonPress(ButtonState state, uint8_t deviceAddress, uint8_t button)
 {
-  lastButtonPress = millis();
+  bool isLongPress = false;
 
   // If the button was pushed on the second MCP then its button address
   // needs to have 16 added to it before doing the button name lookup.
   if (deviceAddress == MCP2_I2C_ADDRESS)
   {
     button += 16;
+  }
+
+  Serial.println(button);
+
+  // The three mem buttons only send release events, and they are either regular or
+  // long press.
+  if (((button == 6) || (button == 20) || (button == 28)))
+  {
+    if (state == ButtonState::Pressed)
+    {
+      return;
+    }
+
+    // Check for a long press when released.
+    if ((millis() - lastButtonPress) > PRESS_AND_HOLD_LENGTH_MS)
+    {
+      isLongPress = true;
+    }
   }
 
   // While the keyboard matrix provides a button location that has to
@@ -190,6 +209,14 @@ void OnButtonPress(ButtonState state, uint8_t deviceAddress, uint8_t button)
     return;
   }
 
+  // The way the names are stored in the list the long press
+  // button names are three farther down from the short press
+  // names.
+  if (isLongPress)
+  {
+    index += 3;
+  }
+
   // Get the button name from flash using the index.
   strcpy_P(buttonName, (char *)pgm_read_word(&(ButtonNames::Names[index])));
 
@@ -198,6 +225,8 @@ void OnButtonPress(ButtonState state, uint8_t deviceAddress, uint8_t button)
   cmdMessenger.sendCmdArg(buttonName);
   cmdMessenger.sendCmdArg(state);
   cmdMessenger.sendCmdEnd();
+
+  lastButtonPress = millis();
 }
 
 /**
@@ -338,9 +367,6 @@ void setup()
   Wire.begin();
   Wire.setClock(400000);
   Serial.begin(115200);
-
-  Serial.println("Delaying 5 seconds...");
-  delay(5000);
 
   attachCommandCallbacks();
   cmdMessenger.printLfCr();

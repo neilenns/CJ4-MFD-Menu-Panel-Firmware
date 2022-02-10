@@ -120,6 +120,8 @@ void ExpanderManager::CheckForButton()
   Serial.println();
 #endif
 
+  _buttonHandler(ButtonState::Pressed, _deviceAddress, _activeButton);
+
   // Save when the press event happened for debouncing purposes.
   _lastPressEventTime = millis();
 
