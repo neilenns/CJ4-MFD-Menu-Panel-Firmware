@@ -45,7 +45,8 @@ bool powerSavingMode = false;
 
 CmdMessenger cmdMessenger = CmdMessenger(Serial);
 MFEEPROM MFeeprom;
-ExpanderManager mcp1(MCP1_I2C_ADDRESS, INT1A_PIN, OnKeyboardEvent, OnButtonPress);
+ExpanderManager mcp1(MCP1_I2C_ADDRESS, INT1A_PIN, OnMCP1Interrupt, OnButtonPress);
+ExpanderManager mcp2(MCP2_I2C_ADDRESS, INT2A_PIN, OnMCP2Interrupt, OnButtonPress);
 LEDMatrix ledMatrix(ADDR::GND, ADDR::GND, LED_SDB_PIN, LED_INTB_PIN, OnLEDEvent);
 
 /**
@@ -79,12 +80,21 @@ void OnLEDEvent()
 }
 
 /**
- * @brief Handles an interrupt from the KeyboardMatrix.
+ * @brief Handles an interrupt from the MCP1 expander.
  *
  */
-void OnKeyboardEvent()
+void OnMCP1Interrupt()
 {
   mcp1.HandleInterrupt();
+}
+
+/**
+ * @brief Handles an interrupt from the MCP1 expander.
+ *
+ */
+void OnMCP2Interrupt()
+{
+  mcp2.HandleInterrupt();
 }
 
 /**
