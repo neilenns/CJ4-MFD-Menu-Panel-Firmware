@@ -104,7 +104,7 @@
       <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.2.0.2, Culture=neutral, PublicKeyToken=null" serial="CJ4 MFD panel/ SN-6f2-f0c" name="MEM_1_LONG" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
         <button>
           <onPress />
-          <onRelease type="MSFS2020CustomInputAction" command="(&gt;H:Generic_Lwr_Hold_MEM1_1)" />
+          <onRelease type="MSFS2020EventIdInputAction" eventId="Generic_Lwr_Hold_MEM1_1" />
         </button>
         <preconditions />
         <configrefs />
@@ -116,7 +116,7 @@
       <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.2.0.2, Culture=neutral, PublicKeyToken=null" serial="CJ4 MFD panel/ SN-6f2-f0c" name="MEM_2_LONG" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
         <button>
           <onPress />
-          <onRelease type="MSFS2020CustomInputAction" command="(&gt;H:Generic_Lwr_Hold_MEM2_1)" />
+          <onRelease type="MSFS2020EventIdInputAction" eventId="Generic_Lwr_Hold_MEM2_1" />
         </button>
         <preconditions />
         <configrefs />
@@ -128,7 +128,7 @@
       <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.2.0.2, Culture=neutral, PublicKeyToken=null" serial="CJ4 MFD panel/ SN-6f2-f0c" name="MEM_3_LONG" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
         <button>
           <onPress />
-          <onRelease type="MSFS2020CustomInputAction" command="(&gt;H:Generic_Lwr_Hold_MEM3_1)" />
+          <onRelease type="MSFS2020EventIdInputAction" eventId="Generic_Lwr_Hold_MEM3_1" />
         </button>
         <preconditions />
         <configrefs />
