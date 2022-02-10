@@ -27,8 +27,8 @@ constexpr uint8_t COLUMN_I2C_ADDRESS = 0x21; // Column MCP23017.
 
 // Arduino pin mappings.
 constexpr uint8_t ROW_INTA_PIN = 0; // Row interrupts pin.
-constexpr uint8_t LED_SDB_PIN = 4;  // Arduino pin connected to SDB on the LED driver.
-constexpr uint8_t LED_INTB_PIN = 7; // Arduino pin connected to to INTB on the LED driver.
+constexpr uint8_t LED_SDB_PIN = 6;  // Arduino pin connected to SDB on the LED driver.
+constexpr uint8_t LED_INTB_PIN = 1; // Arduino pin connected to to INTB on the LED driver.
 
 // Virtual pins for one-off MobiFlight "modules". Their pins
 // start after all the keyboard matrix buttons, of which there are
@@ -49,7 +49,7 @@ LEDMatrix ledMatrix(ADDR::GND, ADDR::GND, LED_SDB_PIN, LED_INTB_PIN, OnLEDEvent)
 
 /**
  * @brief Registers callbacks for all supported MobiFlight commands.
- * 
+ *
  */
 void attachCommandCallbacks()
 {
@@ -70,7 +70,7 @@ void attachCommandCallbacks()
 
 /**
  * @brief Handles an interrupt from the LEDMatrix.
- * 
+ *
  */
 void OnLEDEvent()
 {
@@ -79,7 +79,7 @@ void OnLEDEvent()
 
 /**
  * @brief Handles an interrupt from the KeyboardMatrix.
- * 
+ *
  */
 void OnKeyboardEvent()
 {
@@ -88,7 +88,7 @@ void OnKeyboardEvent()
 
 /**
  * @brief General callback to simply respond OK to the desktop app for unsupported commands.
- * 
+ *
  */
 void SendOk()
 {
@@ -97,7 +97,7 @@ void SendOk()
 
 /**
  * @brief Callback for the MobiFlight event. This doesn't have to do anything so just report success.
- * 
+ *
  */
 void OnSaveConfig()
 {
@@ -106,7 +106,7 @@ void OnSaveConfig()
 
 /**
  * @brief Callback for the MobiFlight event. This doesn't have to do anything so just report success.
- * 
+ *
  */
 void OnActivateConfig()
 {
@@ -116,7 +116,7 @@ void OnActivateConfig()
 /**
  * @brief Loads or generates a new board serial number. Sends a kConfigActivated
  * message to MobiFlight for compatibility purposes.
- * 
+ *
  */
 void OnResetBoard()
 {
@@ -130,8 +130,8 @@ void OnResetBoard()
 /**
  * @brief Loads the board serial number from EEPROM and generates a new one if force is set to true
  * or no serial number was present in EEPROM.
- * 
- * @param force True if a new serial number should be created even if one already exists. 
+ *
+ * @param force True if a new serial number should be created even if one already exists.
  */
 void generateSerial(bool force)
 {
@@ -146,7 +146,7 @@ void generateSerial(bool force)
 
 /**
  * @brief Callback for handling a button press from the keyboard matrix.
- * 
+ *
  * @param state State of the button (pressed or released)
  * @param row Row of the button
  * @param column Column of the button
@@ -185,7 +185,7 @@ void OnButtonPress(ButtonState state, uint8_t row, uint8_t column)
  * @brief Callback for setting the board configuration. Since the board configuration is fixed
  * any requests from MobiFlight to set the config are simply ignored and a remaining byte count of
  * 512 is sent back to keep the desktop app happy.
- * 
+ *
  */
 void OnSetConfig()
 {
@@ -194,7 +194,7 @@ void OnSetConfig()
 
 /**
  * @brief Callback for unknown commands.
- * 
+ *
  */
 void OnUnknownCommand()
 {
@@ -203,7 +203,7 @@ void OnUnknownCommand()
 
 /**
  * @brief Callback for sending the board information to MobiFlight.
- * 
+ *
  */
 void OnGetInfo()
 {
@@ -218,7 +218,7 @@ void OnGetInfo()
 /**
  * @brief Callback for sending module configuration to MobiFlight.
  * The module configuration is generated on the fly rather than being stored in EEPROM.
- * 
+ *
  */
 void OnGetConfig()
 {
@@ -248,7 +248,7 @@ void OnGetConfig()
 
 /**
  * @brief Callback for MobiFlight LED output commands.
- * 
+ *
  */
 void OnSetPin()
 {
@@ -266,7 +266,7 @@ void OnSetPin()
 
 /**
  * @brief Generates a new serial number for the board and stores it in EEPROM.
- * 
+ *
  */
 void OnGenNewSerial()
 {
@@ -279,7 +279,7 @@ void OnGenNewSerial()
 /**
  * @brief Stubbed out method to accept the name argument then discard it. The name
  * is actually hardcoded in the firmware.
- * 
+ *
  */
 void OnSetName()
 {
@@ -293,7 +293,7 @@ void OnSetName()
 /**
  * @brief Checks to see if power saving mode should be enabled or disabled
  * based on the last time a key was pressed.
- * 
+ *
  */
 void CheckForPowerSave()
 {
@@ -311,7 +311,7 @@ void CheckForPowerSave()
 
 /**
  * @brief Android initialization method.
- * 
+ *
  */
 void setup()
 {
@@ -332,7 +332,7 @@ void setup()
 
 /**
  * @brief Arduino application loop.
- * 
+ *
  */
 void loop()
 {
