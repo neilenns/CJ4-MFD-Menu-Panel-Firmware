@@ -4,8 +4,9 @@
 
 enum MFDevice
 {
-  kTypeButton = 1, // 1
-  kTypeOutput = 3, // 3
+  kTypeButton = 1,  // 1
+  kTypeOutput = 3,  // 3
+  kTypeEncoder = 8, // 8
 };
 
 // This is the list of recognized commands. These can be commands that can either be sent or received.

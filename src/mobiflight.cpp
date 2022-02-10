@@ -37,6 +37,20 @@ constexpr uint8_t LED_INTB_PIN = 1; // Arduino pin connected to to INTB on the L
 // is simply that value.
 constexpr uint8_t BRIGHTNESS_PIN = ButtonNames::ButtonCount;
 
+// Physical pins for the five-way button.
+constexpr uint8_t PIN_LEFT = A4;
+constexpr uint8_t PIN_UP = A3;
+constexpr uint8_t PIN_RIGHT = A2;
+constexpr uint8_t PIN_DOWN = A1;
+constexpr uint8_t PIN_CTR = A0;
+
+// Physical pins for the dual encoder.
+constexpr uint8_t ENCODER_TYPE = 0;
+constexpr uint8_t PIN_A = 8;
+constexpr uint8_t PIN_A_PRIME = 9;
+constexpr uint8_t PIN_B = 5;
+constexpr uint8_t PIN_B_PRIME = 10;
+
 // Other defines.
 constexpr unsigned long POWER_SAVING_TIME_SECS = 60 * 60; // One hour (60 minutes * 60 seconds).
 constexpr unsigned long PRESS_AND_HOLD_LENGTH_MS = 500;   // Length of time a key must be held for a long press.
@@ -287,8 +301,22 @@ void OnGetConfig()
     cmdMessenger.sendArg(singleModule);
   }
 
-  // Send configuration for a single output that's used to control LED brightness
-  snprintf(singleModule, 20, "%i.%i.Brightness:", MFDevice::kTypeOutput, BRIGHTNESS_PIN);
+  // Send configuration five-way controller.
+  snprintf(singleModule, 20, "%i.%i.LEFT:", MFDevice::kTypeButton, PIN_LEFT);
+  cmdMessenger.sendArg(singleModule);
+  snprintf(singleModule, 20, "%i.%i.RIGHT:", MFDevice::kTypeButton, PIN_RIGHT);
+  cmdMessenger.sendArg(singleModule);
+  snprintf(singleModule, 20, "%i.%i.UP:", MFDevice::kTypeButton, PIN_UP);
+  cmdMessenger.sendArg(singleModule);
+  snprintf(singleModule, 20, "%i.%i.DOWN:", MFDevice::kTypeButton, PIN_DOWN);
+  cmdMessenger.sendArg(singleModule);
+  snprintf(singleModule, 20, "%i.%i.CTR:", MFDevice::kTypeButton, PIN_CTR);
+  cmdMessenger.sendArg(singleModule);
+
+  // Send configuration for the dual encoders
+  snprintf(singleModule, 20, "%i.%i.%i.%i.ENC_1:", MFDevice::kTypeEncoder, PIN_A, PIN_B, ENCODER_TYPE);
+  cmdMessenger.sendArg(singleModule);
+  snprintf(singleModule, 20, "%i.%i.%i.%i.ENC_2:", MFDevice::kTypeEncoder, PIN_A_PRIME, PIN_B_PRIME, ENCODER_TYPE);
   cmdMessenger.sendArg(singleModule);
 
   cmdMessenger.sendCmdEnd();
