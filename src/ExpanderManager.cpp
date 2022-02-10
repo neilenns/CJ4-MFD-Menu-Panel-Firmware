@@ -42,6 +42,7 @@ void write8AsBits(uint8_t value)
 ExpanderManager::ExpanderManager(uint8_t address, uint8_t interruptPin, KeyboardEvent interruptHandler, ButtonEvent buttonHandler)
 {
   _mcp = new MCP23017(address);
+  _deviceAddress = address;
   _interruptPin = interruptPin;
   _interruptHandler = interruptHandler;
   _buttonHandler = buttonHandler;
@@ -169,7 +170,7 @@ void ExpanderManager::CheckForRelease()
     Serial.print(_activeButton);
 #endif
 
-    _buttonHandler(ButtonState::Released, _activeButton);
+    _buttonHandler(ButtonState::Released, _deviceAddress, _activeButton);
 
     // Issue 7
     // The order of these two lines is very important. Interrupts get enabled

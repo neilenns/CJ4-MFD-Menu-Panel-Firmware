@@ -40,7 +40,7 @@ void attachCommandCallbacks();
 void generateSerial(bool force);
 void loadConfig();
 void OnActivateConfig();
-void OnButtonPress(ButtonState state, uint8_t address);
+void OnButtonPress(ButtonState state, uint8_t deviceAddress, uint8_t button);
 void OnGenNewSerial();
 void OnGetConfig();
 void OnGetInfo();

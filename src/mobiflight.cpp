@@ -149,18 +149,26 @@ void generateSerial(bool force)
  * @brief Callback for handling a button press from a connected MCP.
  *
  * @param state State of the button (pressed or released)
+ * @param deviceAddress The I2C address of the MCP that detected the button event
  * @param button The index of the button pressed on the MCP
  * @param column Column of the button
  */
-void OnButtonPress(ButtonState state, uint8_t button)
+void OnButtonPress(ButtonState state, uint8_t deviceAddress, uint8_t button)
 {
   lastButtonPress = millis();
 
-  // While the keyboard matrix provides a row/column location that has to
+  // If the button was pushed on the second MCP then its button address
+  // needs to have 16 added to it before doing the button name lookup.
+  if (deviceAddress == MCP2_I2C_ADDRESS)
+  {
+    button += 16;
+  }
+
+  // While the keyboard matrix provides a button location that has to
   // be mapped to a button name to send the correct event to MobiFlight.
   // The button names are in a 1D array and the keyboard matrix is sparse
   // so a lookup table is used to get the correct index into the name array
-  // for a given row/column in the keyboard matrix.
+  // for a given button in the keyboard matrix.
   char buttonName[ButtonNames::MaxNameLength] = "";
   uint8_t index = pgm_read_byte(&(ButtonNames::ButtonLUT[button]));
 

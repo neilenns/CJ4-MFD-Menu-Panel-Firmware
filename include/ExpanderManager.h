@@ -20,7 +20,7 @@ enum ButtonState
 extern "C"
 {
   typedef void (*KeyboardEvent)();
-  typedef void (*ButtonEvent)(ButtonState, uint8_t);
+  typedef void (*ButtonEvent)(ButtonState, uint8_t deviceAddress, uint8_t);
 };
 
 class ExpanderManager
@@ -29,6 +29,7 @@ private:
   uint8_t _activeButton = 0;
   ButtonEvent _buttonHandler;
   volatile DetectionState _currentState = DetectionState::WaitingForPress;
+  uint8_t _deviceAddress;
   KeyboardEvent _interruptHandler;
   uint8_t _interruptPin;
   unsigned long _lastPressEventTime;
