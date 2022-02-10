@@ -39,12 +39,10 @@ void write8AsBits(uint8_t value)
 }
 #endif
 
-ExpanderManager::ExpanderManager(uint8_t address, uint8_t interruptPin, KeyboardEvent interruptHandler, ButtonEvent buttonHandler)
+ExpanderManager::ExpanderManager(uint8_t address, ButtonEvent buttonHandler)
 {
   _mcp = new MCP23017(address);
   _deviceAddress = address;
-  _interruptPin = interruptPin;
-  _interruptHandler = interruptHandler;
   _buttonHandler = buttonHandler;
 }
 
@@ -67,18 +65,6 @@ int ExpanderManager::GetBitPosition(uint16_t value)
           (((value & 0xCCCCCCCC) != 0) << 1) |
           (((value & 0xF0F0F0F0) != 0) << 2) |
           (((value & 0xFF00FF00) != 0) << 3));
-}
-
-/**
- * @brief Interrupt handler for when the row changed interrupt fires.
- *
- */
-void ExpanderManager::HandleInterrupt()
-{
-  if (_currentState == WaitingForPress)
-  {
-    _currentState = DetectionState::PressDetected;
-  }
 }
 
 /**

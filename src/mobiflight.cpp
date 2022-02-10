@@ -25,17 +25,15 @@ char serial[MEM_LEN_SERIAL];
 constexpr uint8_t MCP1_I2C_ADDRESS = 0x20; // Address for first MCP23017.
 constexpr uint8_t MCP2_I2C_ADDRESS = 0x21; // Address for second MCP23017.
 
-// Arduino pin mappings.
-constexpr uint8_t INT1A_PIN = 0;    // MCP1 interrupt pin.
-constexpr uint8_t INT2A_PIN = 7;    // MCP2 interrupt pin.
-constexpr uint8_t LED_SDB_PIN = 6;  // Arduino pin connected to SDB on the LED driver.
-constexpr uint8_t LED_INTB_PIN = 1; // Arduino pin connected to to INTB on the LED driver.
-
 // Virtual pins for one-off MobiFlight "modules". Their pins
 // start after all the keyboard matrix buttons, of which there are
 // ButtonNames::ButtonCount. Since it's origin zero the next free pin
 // is simply that value.
 constexpr uint8_t BRIGHTNESS_PIN = ButtonNames::ButtonCount;
+
+// Arduino pin mappings.
+constexpr uint8_t LED_SDB_PIN = 6;  // Arduino pin connected to SDB on the LED driver.
+constexpr uint8_t LED_INTB_PIN = 1; // Arduino pin connected to to INTB on the LED driver.
 
 // Physical pins for the five-way button.
 constexpr uint8_t PIN_LEFT = A4;
@@ -60,8 +58,8 @@ bool powerSavingMode = false;
 
 CmdMessenger cmdMessenger = CmdMessenger(Serial);
 MFEEPROM MFeeprom;
-ExpanderManager mcp1(MCP1_I2C_ADDRESS, INT1A_PIN, OnMCP1Interrupt, OnButtonPress);
-ExpanderManager mcp2(MCP2_I2C_ADDRESS, INT2A_PIN, OnMCP2Interrupt, OnButtonPress);
+ExpanderManager mcp1(MCP1_I2C_ADDRESS, OnButtonPress);
+ExpanderManager mcp2(MCP2_I2C_ADDRESS, OnButtonPress);
 LEDMatrix ledMatrix(ADDR::GND, ADDR::GND, LED_SDB_PIN, LED_INTB_PIN, OnLEDEvent);
 
 /**
@@ -92,24 +90,6 @@ void attachCommandCallbacks()
 void OnLEDEvent()
 {
   ledMatrix.HandleInterrupt();
-}
-
-/**
- * @brief Handles an interrupt from the MCP1 expander.
- *
- */
-void OnMCP1Interrupt()
-{
-  mcp1.HandleInterrupt();
-}
-
-/**
- * @brief Handles an interrupt from the MCP1 expander.
- *
- */
-void OnMCP2Interrupt()
-{
-  mcp2.HandleInterrupt();
 }
 
 /**

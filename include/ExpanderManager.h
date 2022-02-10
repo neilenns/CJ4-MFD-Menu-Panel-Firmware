@@ -7,7 +7,6 @@
 enum DetectionState
 {
   WaitingForPress,
-  PressDetected,
   WaitingForRelease
 };
 
@@ -19,7 +18,6 @@ enum ButtonState
 
 extern "C"
 {
-  typedef void (*KeyboardEvent)();
   typedef void (*ButtonEvent)(ButtonState, uint8_t deviceAddress, uint8_t);
 };
 
@@ -30,8 +28,6 @@ private:
   ButtonEvent _buttonHandler;
   volatile DetectionState _currentState = DetectionState::WaitingForPress;
   uint8_t _deviceAddress;
-  KeyboardEvent _interruptHandler;
-  uint8_t _interruptPin;
   unsigned long _lastPressEventTime;
 
   MCP23017 *_mcp;
@@ -41,8 +37,7 @@ private:
   static int GetBitPosition(uint16_t value);
 
 public:
-  ExpanderManager(uint8_t address, uint8_t interruptPin, KeyboardEvent interruptHandler, ButtonEvent buttonHandler);
+  ExpanderManager(uint8_t address, ButtonEvent buttonHandler);
   void Init();
   void Loop();
-  void HandleInterrupt();
 };
