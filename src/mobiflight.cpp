@@ -4,7 +4,7 @@
 
 #include "ButtonNames.h"
 #include "CmdMessenger.h"
-#include "KeyboardMatrix.h"
+#include "ExpanderManager.h"
 #include "LEDMatrix.h"
 #include "MFEEPROM.h"
 #include "mobiflight.h"
@@ -21,12 +21,13 @@ constexpr uint8_t MEM_OFFSET_SERIAL = 0;
 constexpr uint8_t MEM_LEN_SERIAL = 11;
 char serial[MEM_LEN_SERIAL];
 
-// I2C Addresses for the row and column IO expanders.
-constexpr uint8_t ROW_I2C_ADDRESS = 0x20;    // Row MCP23017.
-constexpr uint8_t COLUMN_I2C_ADDRESS = 0x21; // Column MCP23017.
+// I2C Addresses for the IO expanders.
+constexpr uint8_t MCP1_I2C_ADDRESS = 0x20; // Address for first MCP23017.
+constexpr uint8_t MCP2_I2C_ADDRESS = 0x21; // Address for second MCP23017.
 
 // Arduino pin mappings.
-constexpr uint8_t ROW_INTA_PIN = 0; // Row interrupts pin.
+constexpr uint8_t INT1A_PIN = 0;    // MCP1 interrupt pin.
+constexpr uint8_t INT2A_PIN = 7;    // MCP2 interrupt pin.
 constexpr uint8_t LED_SDB_PIN = 6;  // Arduino pin connected to SDB on the LED driver.
 constexpr uint8_t LED_INTB_PIN = 1; // Arduino pin connected to to INTB on the LED driver.
 
@@ -44,7 +45,7 @@ bool powerSavingMode = false;
 
 CmdMessenger cmdMessenger = CmdMessenger(Serial);
 MFEEPROM MFeeprom;
-KeyboardMatrix keyboardMatrix(ROW_I2C_ADDRESS, COLUMN_I2C_ADDRESS, ROW_INTA_PIN, OnKeyboardEvent, OnButtonPress);
+ExpanderManager mcp1(MCP1_I2C_ADDRESS, INT1A_PIN, OnKeyboardEvent, OnButtonPress);
 LEDMatrix ledMatrix(ADDR::GND, ADDR::GND, LED_SDB_PIN, LED_INTB_PIN, OnLEDEvent);
 
 /**
@@ -83,7 +84,7 @@ void OnLEDEvent()
  */
 void OnKeyboardEvent()
 {
-  keyboardMatrix.HandleInterrupt();
+  mcp1.HandleInterrupt();
 }
 
 /**
@@ -145,13 +146,13 @@ void generateSerial(bool force)
 }
 
 /**
- * @brief Callback for handling a button press from the keyboard matrix.
+ * @brief Callback for handling a button press from a connected MCP.
  *
  * @param state State of the button (pressed or released)
- * @param row Row of the button
+ * @param button The index of the button pressed on the MCP
  * @param column Column of the button
  */
-void OnButtonPress(ButtonState state, uint8_t row, uint8_t column)
+void OnButtonPress(ButtonState state, uint8_t button)
 {
   lastButtonPress = millis();
 
@@ -161,7 +162,7 @@ void OnButtonPress(ButtonState state, uint8_t row, uint8_t column)
   // so a lookup table is used to get the correct index into the name array
   // for a given row/column in the keyboard matrix.
   char buttonName[ButtonNames::MaxNameLength] = "";
-  uint8_t index = pgm_read_byte(&(ButtonNames::RowColumnLUT[row][column]));
+  uint8_t index = pgm_read_byte(&(ButtonNames::RowColumnLUT[button][button]));
 
   // If the lookup table returns 255 then it's a row/column that shouldn't
   // ever fire because it's a non-existent button.
@@ -324,7 +325,7 @@ void setup()
   cmdMessenger.printLfCr();
 
   OnResetBoard();
-  keyboardMatrix.Init();
+  mcp1.Init();
   ledMatrix.Init();
 
   lastButtonPress = millis();
@@ -337,7 +338,7 @@ void setup()
 void loop()
 {
   cmdMessenger.feedinSerialData();
-  keyboardMatrix.Loop();
+  mcp1.Loop();
   CheckForPowerSave();
   ledMatrix.Loop();
 }
