@@ -189,8 +189,6 @@ void OnButtonPress(ButtonState state, uint8_t deviceAddress, uint8_t button)
     button += 16;
   }
 
-  Serial.println(button);
-
   // The three mem buttons only send release events, and they are either regular or
   // long press.
   if (((button == 6) || (button == 20) || (button == 28)))
@@ -291,15 +289,20 @@ void OnGetConfig()
   cmdMessenger.sendCmdStart(MFMessage::kInfo);
   cmdMessenger.sendFieldSeparator();
 
-  // Send configuration for all the buttons
+  // Send configuration for all the buttons. The virtual pins for the two MCP
+  // expansions start at 100 to avoid overlapping with the standard Arduino pins.
   for (i = 0; i < ButtonNames::ButtonCount; i++)
   {
     // Get the pin name from flash
     strcpy_P(pinName, (char *)pgm_read_word(&(ButtonNames::Names[i])));
 
-    snprintf(singleModule, 20, "%i.%i.%s:", MFDevice::kTypeButton, i, pinName);
+    snprintf(singleModule, 20, "%i.%i.%s:", MFDevice::kTypeButton, i + 100, pinName);
     cmdMessenger.sendArg(singleModule);
   }
+
+  // Send configuration for the LED brightness output.
+  snprintf(singleModule, 20, "%i.%i.Brightness:", MFDevice::kTypeOutput, BRIGHTNESS_PIN);
+  cmdMessenger.sendArg(singleModule);
 
   // Send configuration five-way controller.
   snprintf(singleModule, 20, "%i.%i.LEFT:", MFDevice::kTypeButton, PIN_LEFT);

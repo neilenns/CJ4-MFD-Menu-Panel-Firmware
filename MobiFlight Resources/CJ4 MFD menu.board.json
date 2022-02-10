@@ -36,423 +36,177 @@
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "L1",
-      "Pin": 0
+      "Pin": 100
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "L2",
-      "Pin": 1
+      "Pin": 101
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "L3",
-      "Pin": 2
+      "Pin": 102
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "L4",
-      "Pin": 3
+      "Pin": 103
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "L5",
-      "Pin": 4
+      "Pin": 104
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "L6",
-      "Pin": 5
+      "Pin": 105
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "MSG",
-      "Pin": 6
+      "Pin": 106
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "DIR",
-      "Pin": 7
+      "Pin": 107
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "IDX",
-      "Pin": 8
+      "Pin": 108
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "TUN",
-      "Pin": 9
+      "Pin": 109
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "A",
-      "Pin": 10
+      "Pin": 110
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "H",
-      "Pin": 11
+      "Pin": 111
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "O",
-      "Pin": 12
+      "Pin": 112
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "V",
-      "Pin": 13
+      "Pin": 113
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "FPLN",
-      "Pin": 14
+      "Pin": 114
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "B",
-      "Pin": 15
+      "Pin": 115
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "I",
-      "Pin": 16
+      "Pin": 116
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "P",
-      "Pin": 17
+      "Pin": 117
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "W",
-      "Pin": 18
+      "Pin": 118
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "LEGS",
-      "Pin": 19
+      "Pin": 119
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "C",
-      "Pin": 20
+      "Pin": 120
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "J",
-      "Pin": 21
+      "Pin": 121
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "Q",
-      "Pin": 22
+      "Pin": 122
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "X",
-      "Pin": 23
+      "Pin": 123
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "DEP",
       "Pin": 24
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "D",
-      "Pin": 25
+      "Pin": 8
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "K",
-      "Pin": 26
+      "Pin": 9
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "R",
-      "Pin": 27
+      "Pin": 5
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "Y",
-      "Pin": 28
+      "Pin": 10
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "PERF",
-      "Pin": 29
+      "Pin": 22
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "E",
-      "Pin": 30
+      "Pin": 20
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "L",
-      "Pin": 31
+      "Pin": 21
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "S",
-      "Pin": 32
+      "Pin": 19
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "Z",
-      "Pin": 33
+      "Pin": 18
     },
     {
       "isAnalog": false,
       "isI2C": false,
-      "Name": "DSPL",
-      "Pin": 34
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "F",
-      "Pin": 35
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "M",
-      "Pin": 36
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "T",
-      "Pin": 37
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "SP",
-      "Pin": 38
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "MFD",
-      "Pin": 39
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "G",
-      "Pin": 40
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "N",
-      "Pin": 41
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "U",
-      "Pin": 42
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "SLSH",
-      "Pin": 43
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "DATA",
-      "Pin": 44
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "1",
-      "Pin": 45
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "4",
-      "Pin": 46
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "7",
-      "Pin": 47
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "DOT",
-      "Pin": 48
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "PREV",
-      "Pin": 49
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "2",
-      "Pin": 50
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "5",
-      "Pin": 51
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "8",
-      "Pin": 52
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "0",
-      "Pin": 53
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "3",
-      "Pin": 54
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "6",
-      "Pin": 55
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "9",
-      "Pin": 56
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "PLUS",
-      "Pin": 57
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "R1",
-      "Pin": 58
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "R2",
-      "Pin": 59
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "R3",
-      "Pin": 60
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "R4",
-      "Pin": 61
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "R5",
-      "Pin": 62
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "R6",
-      "Pin": 63
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "EXEC",
-      "Pin": 64
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "NEXT",
-      "Pin": 65
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "CLR",
-      "Pin": 66
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "BRT",
-      "Pin": 67
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "Name": "DIM",
-      "Pin": 68
-    },
-    {
-      "isAnalog": false,
-      "isI2C": false,
-      "isPWM": true,
-      "Name": "BRIGHTNESS",
-      "Pin": 69
+      "Pin": 10
     }
   ]
 }
