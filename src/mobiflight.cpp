@@ -162,7 +162,7 @@ void OnButtonPress(ButtonState state, uint8_t button)
   // so a lookup table is used to get the correct index into the name array
   // for a given row/column in the keyboard matrix.
   char buttonName[ButtonNames::MaxNameLength] = "";
-  uint8_t index = pgm_read_byte(&(ButtonNames::RowColumnLUT[button][button]));
+  uint8_t index = pgm_read_byte(&(ButtonNames::ButtonLUT[button]));
 
   // If the lookup table returns 255 then it's a row/column that shouldn't
   // ever fire because it's a non-existent button.
