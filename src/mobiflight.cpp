@@ -339,11 +339,15 @@ void setup()
   Wire.setClock(400000);
   Serial.begin(115200);
 
+  Serial.println("Delaying 5 seconds...");
+  delay(5000);
+
   attachCommandCallbacks();
   cmdMessenger.printLfCr();
 
   OnResetBoard();
   mcp1.Init();
+  mcp2.Init();
   ledMatrix.Init();
 
   lastButtonPress = millis();
@@ -357,6 +361,7 @@ void loop()
 {
   cmdMessenger.feedinSerialData();
   mcp1.Loop();
+  mcp2.Loop();
   CheckForPowerSave();
   ledMatrix.Loop();
 }

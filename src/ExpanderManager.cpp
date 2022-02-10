@@ -89,28 +89,10 @@ void ExpanderManager::Init()
 {
   _mcp->init();
 
-  _mcp->writeRegister(MCP23017Register::IODIR_A, 0xFF, 0xFF);  // All as input input
-  _mcp->writeRegister(MCP23017Register::GPIO_A, 0xFF, 0xFF);   // Reset all to 1s
-  _mcp->writeRegister(MCP23017Register::GPPU_A, 0xFF, 0xFF);   // All have pull-up resistors off for all connected lines, but on for the four unused rows
-  _mcp->writeRegister(MCP23017Register::INTCON_A, 0xFF, 0xFF); // Turn interrupts on for all
-  _mcp->writeRegister(MCP23017Register::DEFVAL_A, 0xFF, 0xFF); // Default value of 1 for all
+  _mcp->writeRegister(MCP23017Register::IODIR_A, 0xFF, 0xFF); // All as input
+  _mcp->writeRegister(MCP23017Register::GPIO_A, 0xFF, 0xFF);  // Reset all to 1s
+  _mcp->writeRegister(MCP23017Register::GPPU_A, 0xFF, 0xFF);  // Turn on pull up resistors
 
-  // Attach the Arduino interrupt handler.
-  pinMode(_interruptPin, INPUT_PULLUP);
-  attachInterrupt(
-      digitalPinToInterrupt(_interruptPin), _interruptHandler,
-      CHANGE);
-
-  // The order of interrupt startup matters a lot. After the row is initialized for
-  // interrupt detection then the state machine is set to WaitingForPress. This ensures
-  // in the rare case that an interrupt fires immediately after initialization
-  // that the state machine won't miss it.
-  _mcp->interruptMode(MCP23017InterruptMode::Or); // Interrupt on one line
-
-  // Enable interrupts
-  _mcp->writeRegister(MCP23017Register::GPINTEN_A, 0xFF, 0xFF);
-
-  _mcp->clearInterrupts(); // Clear all interrupts which could come from initialization
   _currentState = DetectionState::WaitingForPress;
 }
 
@@ -120,38 +102,32 @@ void ExpanderManager::Init()
  */
 void ExpanderManager::CheckForButton()
 {
-  uint8_t buttonIntfA, buttonIntfB;
-  uint16_t buttonStates;
+  uint16_t buttonStates = _mcp->read();
 
-  // Read the INTF registers to figure out which pin caused the interrupt. INTF is
-  // used isntead of GPIO to cover the case of the button bouncing and reading 0 by the
-  // time the code gets to read the GPIO pins. INTCAP can't be used either because
-  // only INTCAP_A or INTCAP_B updates on an interrupt (depending on which port caused it),
-  // and there's no way to clear them.
-  _mcp->readRegister(MCP23017Register::INTF_A, buttonIntfA, buttonIntfB);
+  // If nothing is pressed then just return
+  if (buttonStates == 0xFFFF)
+  {
+    return;
+  }
 
-  // The port A values are the high byte of the row state. Since the INTF registers
-  // use a 1 to indicate the pin that fired the interrupt and Arduinos expect a 0
-  // on a button press the entire value gets inverted.
-  buttonStates = ~((buttonIntfA) << 8 | buttonIntfB);
-
+  // Figure out which button is actually pressed. This assumes only one button
+  // will ever be pressed at a given time.
   _activeButton = ExpanderManager::GetBitPosition(buttonStates);
 
 #ifdef DEBUG
   Serial.print("Detected press at: ");
   Serial.print(_activeButton);
+  Serial.println();
 #endif
 
-  // Save when the press event happened so a test can be done on release
-  // to look for a press-and-hold on the CLR/DEL key.
+  // Save when the press event happened for debouncing purposes.
   _lastPressEventTime = millis();
 
   _currentState = WaitingForRelease;
 }
 
 /**
- * @brief Determines when a button was released by watching for the row port to reset
- * to all 1s.
+ * @brief Determines when a button was released.
  *
  */
 void ExpanderManager::CheckForRelease()
@@ -168,17 +144,11 @@ void ExpanderManager::CheckForRelease()
 #ifdef DEBUG
     Serial.print("Detected release at: ");
     Serial.print(_activeButton);
+    Serial.println();
 #endif
 
     _buttonHandler(ButtonState::Released, _deviceAddress, _activeButton);
 
-    // Issue 7
-    // The order of these two lines is very important. Interrupts get enabled
-    // after the state machine is reset to waiting for an interrupt. Otherwise
-    // a race condition can (and did!) occur where an interrupt fires and then
-    // the state machine resets back to waiting for an interrupt, resulting
-    // in the interrupt never getting handled and all further key detection
-    // being blocked.
     _currentState = WaitingForPress;
   }
 }
@@ -197,9 +167,6 @@ void ExpanderManager::Loop()
   switch (_currentState)
   {
   case WaitingForPress:
-    // Nothing to do here, interrupts will handle it
-    break;
-  case PressDetected:
     CheckForButton();
     break;
   case WaitingForRelease:
