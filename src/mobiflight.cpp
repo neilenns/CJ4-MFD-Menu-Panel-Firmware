@@ -264,27 +264,22 @@ void OnGetConfig()
     cmdMessenger.sendArg(singleModule);
   }
 
-  // Send configuration for the LED brightness output.
-  snprintf(singleModule, 20, "%i.%i.Brightness:", MFDevice::kTypeOutput, BRIGHTNESS_PIN);
-  cmdMessenger.sendArg(singleModule);
+  // Send configuration for the LED brightness output. 24 is the
+  // value of BRIGHTNESS_PIN.
+  cmdMessenger.sendArg(F("3.24.Brightness:"));
 
-  // Send configuration five-way controller.
-  snprintf(singleModule, 20, "%i.%i.LEFT:", MFDevice::kTypeButton, PIN_LEFT);
-  cmdMessenger.sendArg(singleModule);
-  snprintf(singleModule, 20, "%i.%i.RIGHT:", MFDevice::kTypeButton, PIN_RIGHT);
-  cmdMessenger.sendArg(singleModule);
-  snprintf(singleModule, 20, "%i.%i.UP:", MFDevice::kTypeButton, PIN_UP);
-  cmdMessenger.sendArg(singleModule);
-  snprintf(singleModule, 20, "%i.%i.DOWN:", MFDevice::kTypeButton, PIN_DOWN);
-  cmdMessenger.sendArg(singleModule);
-  snprintf(singleModule, 20, "%i.%i.CTR:", MFDevice::kTypeButton, PIN_CTR);
-  cmdMessenger.sendArg(singleModule);
+  // Send configuration five-way controller. The pin numbers are defined in
+  // PinAssignments.h but to save flash everything is brute force hard coded
+  // here.
+  cmdMessenger.sendArg(F("1.20.RIGHT:"));
+  cmdMessenger.sendArg(F("1.22.LEFT:"));
+  cmdMessenger.sendArg(F("1.21.UP:"));
+  cmdMessenger.sendArg(F("1.19.DOWN:"));
+  cmdMessenger.sendArg(F("1.18.CTR:"));
 
-  // Send configuration for the dual encoders
-  snprintf(singleModule, 20, "%i.%i.%i.%i.ENC_1:", MFDevice::kTypeEncoder, PIN_A, PIN_B, ENCODER_TYPE);
-  cmdMessenger.sendArg(singleModule);
-  snprintf(singleModule, 20, "%i.%i.%i.%i.ENC_2:", MFDevice::kTypeEncoder, PIN_A_PRIME, PIN_B_PRIME, ENCODER_TYPE);
-  cmdMessenger.sendArg(singleModule);
+  // Send configuration for the dual encoders. The 0 is the encoder type.
+  cmdMessenger.sendArg(F("8.8.5.0.ENC_1:"));
+  cmdMessenger.sendArg(F("8.9.10.0.ENC_2:"));
 
   cmdMessenger.sendCmdEnd();
 }
