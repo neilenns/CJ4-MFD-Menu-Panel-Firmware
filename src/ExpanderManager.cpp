@@ -39,7 +39,7 @@ void write8AsBits(uint8_t value)
 }
 #endif
 
-ExpanderManager::ExpanderManager(uint8_t address, ButtonEvent buttonHandler)
+ExpanderManager::ExpanderManager(uint8_t address, ExpanderEvent buttonHandler)
 {
   _mcp = new MCP23017(address);
   _deviceAddress = address;

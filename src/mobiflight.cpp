@@ -2,12 +2,13 @@
 #include <MFBoards.h>
 #include <Wire.h>
 
-#include "ButtonNames.h"
+#include "ExpanderButtonNames.h"
 #include "CmdMessenger.h"
 #include "ExpanderManager.h"
 #include "LEDMatrix.h"
 #include "MFEEPROM.h"
 #include "mobiflight.h"
+#include "PinAssignments.h"
 
 // The build version comes from an environment variable.
 #define STRINGIZER(arg) #arg
@@ -27,27 +28,9 @@ constexpr uint8_t MCP2_I2C_ADDRESS = 0x21; // Address for second MCP23017.
 
 // Virtual pins for one-off MobiFlight "modules". Their pins
 // start after all the keyboard matrix buttons, of which there are
-// ButtonNames::ButtonCount. Since it's origin zero the next free pin
+// ExpanderButtonNames::ButtonCount. Since it's origin zero the next free pin
 // is simply that value.
-constexpr uint8_t BRIGHTNESS_PIN = ButtonNames::ButtonCount;
-
-// Arduino pin mappings.
-constexpr uint8_t LED_SDB_PIN = 6;  // Arduino pin connected to SDB on the LED driver.
-constexpr uint8_t LED_INTB_PIN = 1; // Arduino pin connected to to INTB on the LED driver.
-
-// Physical pins for the five-way button.
-constexpr uint8_t PIN_LEFT = A4;
-constexpr uint8_t PIN_UP = A3;
-constexpr uint8_t PIN_RIGHT = A2;
-constexpr uint8_t PIN_DOWN = A1;
-constexpr uint8_t PIN_CTR = A0;
-
-// Physical pins for the dual encoder.
-constexpr uint8_t ENCODER_TYPE = 0;
-constexpr uint8_t PIN_A = 8;
-constexpr uint8_t PIN_A_PRIME = 9;
-constexpr uint8_t PIN_B = 5;
-constexpr uint8_t PIN_B_PRIME = 10;
+constexpr uint8_t BRIGHTNESS_PIN = ExpanderButtonNames::ButtonCount;
 
 // Other defines.
 constexpr unsigned long POWER_SAVING_TIME_SECS = 60 * 60; // One hour (60 minutes * 60 seconds).
@@ -175,6 +158,7 @@ void OnButtonPress(ButtonState state, uint8_t deviceAddress, uint8_t button)
   {
     if (state == ButtonState::Pressed)
     {
+      lastButtonPress = millis();
       return;
     }
 
@@ -190,8 +174,8 @@ void OnButtonPress(ButtonState state, uint8_t deviceAddress, uint8_t button)
   // The button names are in a 1D array and the keyboard matrix is sparse
   // so a lookup table is used to get the correct index into the name array
   // for a given button in the keyboard matrix.
-  char buttonName[ButtonNames::MaxNameLength] = "";
-  uint8_t index = pgm_read_byte(&(ButtonNames::ButtonLUT[button]));
+  char buttonName[ExpanderButtonNames::MaxNameLength] = "";
+  uint8_t index = pgm_read_byte(&(ExpanderButtonNames::ButtonLUT[button]));
 
   // If the lookup table returns 255 then it's a row/column that shouldn't
   // ever fire because it's a non-existent button.
@@ -210,7 +194,7 @@ void OnButtonPress(ButtonState state, uint8_t deviceAddress, uint8_t button)
   }
 
   // Get the button name from flash using the index.
-  strcpy_P(buttonName, (char *)pgm_read_word(&(ButtonNames::Names[index])));
+  strcpy_P(buttonName, (char *)pgm_read_word(&(ExpanderButtonNames::Names[index])));
 
   // Send the button name and state to MobiFlight.
   cmdMessenger.sendCmdStart(MFMessage::kButtonChange);
@@ -264,17 +248,17 @@ void OnGetConfig()
 {
   auto i = 0;
   char singleModule[20] = "";
-  char pinName[ButtonNames::MaxNameLength] = "";
+  char pinName[ExpanderButtonNames::MaxNameLength] = "";
 
   cmdMessenger.sendCmdStart(MFMessage::kInfo);
   cmdMessenger.sendFieldSeparator();
 
   // Send configuration for all the buttons. The virtual pins for the two MCP
   // expansions start at 100 to avoid overlapping with the standard Arduino pins.
-  for (i = 0; i < ButtonNames::ButtonCount; i++)
+  for (i = 0; i < ExpanderButtonNames::ButtonCount; i++)
   {
     // Get the pin name from flash
-    strcpy_P(pinName, (char *)pgm_read_word(&(ButtonNames::Names[i])));
+    strcpy_P(pinName, (char *)pgm_read_word(&(ExpanderButtonNames::Names[i])));
 
     snprintf(singleModule, 20, "%i.%i.%s:", MFDevice::kTypeButton, i + 100, pinName);
     cmdMessenger.sendArg(singleModule);

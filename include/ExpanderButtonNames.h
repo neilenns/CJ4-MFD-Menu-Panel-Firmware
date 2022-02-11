@@ -5,7 +5,7 @@
 // The methods for storing all this data in PROGMEM comes from
 // https://www.arduino.cc/reference/en/language/variables/utilities/progmem/
 
-namespace ButtonNames
+namespace ExpanderButtonNames
 {
     constexpr uint8_t ButtonLUT[] PROGMEM = {
         0, // E_BTN
