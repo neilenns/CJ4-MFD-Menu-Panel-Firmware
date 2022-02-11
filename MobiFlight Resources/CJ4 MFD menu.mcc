@@ -278,5 +278,45 @@
         <configrefs />
       </settings>
     </config>
+    <config guid="29767358-c2be-472e-9d84-1d7cb64ad150">
+      <active>true</active>
+      <description>DATA knob</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.2.0.2, Culture=neutral, PublicKeyToken=null" serial="CJ4 MFD panel/ SN-6f2-f0c" name="ENC_1" type="Encoder" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <encoder>
+          <onLeft type="MSFS2020EventIdInputAction" eventId="Generic_Lwr_DATA_DEC" />
+          <onLeftFast />
+          <onRight type="MSFS2020EventIdInputAction" eventId="Generic_Lwr_DATA_DEC" />
+          <onRightFast />
+        </encoder>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="1a5db35c-47cf-49c9-b59e-b547e72f9804">
+      <active>true</active>
+      <description>MENU ADV knob</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.2.0.2, Culture=neutral, PublicKeyToken=null" serial="CJ4 MFD panel/ SN-6f2-f0c" name="ENC_2" type="Encoder" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <encoder>
+          <onLeft type="MSFS2020EventIdInputAction" eventId="Generic_Lwr_MENU_ADV_DEC" />
+          <onLeftFast />
+          <onRight type="MSFS2020EventIdInputAction" eventId="Generic_Lwr_MENU_ADV_INC" />
+          <onRightFast />
+        </encoder>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="eb905306-d75e-4eef-9a76-820e875d1fc2">
+      <active>false</active>
+      <description>DATA - Short</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.2.0.2, Culture=neutral, PublicKeyToken=null" serial="CJ4 MFD panel/ SN-6f2-f0c" name="E_BTN" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress type="MSFS2020EventIdInputAction" eventId="Generic_Lwr_DATA_PUSH" />
+          <onRelease />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
   </inputs>
 </MobiflightConnector>

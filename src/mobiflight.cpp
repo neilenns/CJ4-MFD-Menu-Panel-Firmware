@@ -290,8 +290,8 @@ void OnGetConfig()
   cmdMessenger.sendArg(F("1.18.CTR:"));
 
   // Send configuration for the dual encoders. The 0 is the encoder type.
-  cmdMessenger.sendArg(F("8.8.5.0.ENC_1:"));
-  cmdMessenger.sendArg(F("8.9.10.0.ENC_2:"));
+  cmdMessenger.sendArg(F("8.8.5.1.ENC_1:"));
+  cmdMessenger.sendArg(F("8.9.10.1.ENC_2:"));
 
   cmdMessenger.sendCmdEnd();
 }
@@ -372,8 +372,8 @@ void AddMFDevices()
   buttons[4] = MFButton(PIN_CTR, F("CTR"));
   MFButton::AttachHandler(HandlerOnButton);
 
-  encoders[0] = MFEncoder(PIN_A, PIN_B, 0, F("ENC_1"));
-  encoders[1] = MFEncoder(PIN_A_PRIME, PIN_B_PRIME, 0, F("ENC_2"));
+  encoders[0] = MFEncoder(PIN_B, PIN_A, 1, F("ENC_1"));
+  encoders[1] = MFEncoder(PIN_B_PRIME, PIN_A_PRIME, 1, F("ENC_2"));
   MFEncoder::attachHandler(HandlerOnEncoder);
 }
 
