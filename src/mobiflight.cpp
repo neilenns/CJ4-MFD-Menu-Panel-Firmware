@@ -5,9 +5,10 @@
 #include "CmdMessenger.h"
 #include "ExpanderButtonNames.h"
 #include "ExpanderManager.h"
-#include "MFButton.h"
 #include "LEDMatrix.h"
+#include "MFButton.h"
 #include "MFEEPROM.h"
+#include "MFEncoder.h"
 #include "mobiflight.h"
 #include "PinAssignments.h"
 
@@ -41,7 +42,9 @@ constexpr unsigned long BUTTON_DEBOUNCE_LENGTH_MS = 10;   // Number of milliseco
 // MF-style devices
 constexpr uint8_t MAX_BUTTONS = 5;
 MFButton buttons[MAX_BUTTONS];
-uint8_t buttonsRegistered = 0;
+
+constexpr uint8_t MAX_ENCODERS = 2;
+MFEncoder encoders[MAX_ENCODERS];
 
 // State variables
 unsigned long lastButtonPress = 0;
@@ -368,6 +371,10 @@ void AddMFDevices()
   buttons[3] = MFButton(PIN_DOWN, F("DOWN"));
   buttons[4] = MFButton(PIN_CTR, F("CTR"));
   MFButton::AttachHandler(HandlerOnButton);
+
+  encoders[0] = MFEncoder(PIN_A, PIN_B, 0, F("ENC_1"));
+  encoders[1] = MFEncoder(PIN_A_PRIME, PIN_B_PRIME, 0, F("ENC_2"));
+  MFEncoder::attachHandler(HandlerOnEncoder);
 }
 
 /**
@@ -379,12 +386,27 @@ void AddMFDevices()
  */
 void HandlerOnButton(uint8_t eventId, uint8_t pin, const __FlashStringHelper *name)
 {
-  cmdMessenger.sendCmdStart(kButtonChange);
+  cmdMessenger.sendCmdStart(MFMessage::kButtonChange);
   cmdMessenger.sendCmdArg(name);
   cmdMessenger.sendCmdArg(eventId);
   cmdMessenger.sendCmdEnd();
 
   lastButtonPress = millis();
+};
+
+/**
+ * @brief Handles events from MF-style encoders
+ *
+ * @param eventId
+ * @param pin The encoder pin that fired the event.
+ * @param name The name of the encoder that fired the event.
+ */
+void HandlerOnEncoder(uint8_t eventId, uint8_t pin, const __FlashStringHelper *name)
+{
+  cmdMessenger.sendCmdStart(MFMessage::kEncoderChange);
+  cmdMessenger.sendCmdArg(name);
+  cmdMessenger.sendCmdArg(eventId);
+  cmdMessenger.sendCmdEnd();
 };
 
 /**
@@ -396,6 +418,18 @@ void ReadButtons()
   for (int i = 0; i != MAX_BUTTONS; i++)
   {
     buttons[i].Update();
+  }
+}
+
+/**
+ * @brief Loops through MF-style encoders to check for encoder events.
+ *
+ */
+void ReadEncoders()
+{
+  for (int i = 0; i != MAX_ENCODERS; i++)
+  {
+    encoders[i].Update();
   }
 }
 
@@ -437,6 +471,7 @@ void loop()
     mcp1.Loop();
     mcp2.Loop();
     ReadButtons();
+    ReadEncoders();
     lastButtonUpdate = millis();
   }
 

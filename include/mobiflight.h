@@ -19,7 +19,8 @@ enum MFMessage
   kInitModule = 0,          // 0
   kSetModule = 1,           // 1
   kSetPin = 2,              // 2
-  kStatus = 5,              // 5, Command to report status
+  kStatus = 5,              // 5
+  kEncoderChange = 6,       // 6
   kButtonChange = 7,        // 7
   kGetInfo = 9,             // 9
   kInfo = 10,               // 10
@@ -40,6 +41,7 @@ enum MFMessage
 void attachCommandCallbacks();
 void generateSerial(bool force);
 void HandlerOnButton(uint8_t eventId, uint8_t pin, const __FlashStringHelper *name);
+void HandlerOnEncoder(uint8_t eventId, uint8_t pin, const __FlashStringHelper *name);
 void loadConfig();
 void OnActivateConfig();
 void OnButtonPress(ButtonState state, uint8_t deviceAddress, uint8_t button);
