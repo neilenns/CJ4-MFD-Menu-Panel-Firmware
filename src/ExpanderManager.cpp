@@ -4,7 +4,6 @@
 
 #include "ExpanderManager.h"
 
-constexpr unsigned long DEBOUNCE_TIME_MS = 10;          // Time between button events in milliseconds.
 constexpr unsigned long PRESS_AND_HOLD_LENGTH_MS = 500; // Length of time a key must be held for a long press.
 
 #ifdef DEBUG
@@ -143,14 +142,6 @@ void ExpanderManager::CheckForRelease()
 
 void ExpanderManager::Loop()
 {
-  // Unfortunately interrupt-based debouncing as described in the application note for the MCP23017
-  // isn't enough to handle key debouncing. This check prevents duplicate key events which are
-  // quite common when just relying on the interrupt method.
-  if ((millis() - _lastPressEventTime) < DEBOUNCE_TIME_MS)
-  {
-    return;
-  }
-
   // Fininte state machine for button detection
   switch (_currentState)
   {
