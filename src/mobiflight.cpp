@@ -387,7 +387,11 @@ void HandlerOnButton(uint8_t eventId, uint8_t pin, const __FlashStringHelper *na
   lastButtonPress = millis();
 };
 
-void readButtons()
+/**
+ * @brief Loops through the MF-style buttons to check for button events.
+ *
+ */
+void ReadButtons()
 {
   for (int i = 0; i != MAX_BUTTONS; i++)
   {
@@ -396,7 +400,7 @@ void readButtons()
 }
 
 /**
- * @brief Android initialization method.
+ * @brief Arduino initialization method.
  *
  */
 void setup()
@@ -432,7 +436,7 @@ void loop()
   {
     mcp1.Loop();
     mcp2.Loop();
-    readButtons();
+    ReadButtons();
     lastButtonUpdate = millis();
   }
 
