@@ -39,6 +39,7 @@ enum MFMessage
 
 void attachCommandCallbacks();
 void generateSerial(bool force);
+void HandlerOnButton(uint8_t eventId, uint8_t pin, const __FlashStringHelper *name);
 void loadConfig();
 void OnActivateConfig();
 void OnButtonPress(ButtonState state, uint8_t deviceAddress, uint8_t button);

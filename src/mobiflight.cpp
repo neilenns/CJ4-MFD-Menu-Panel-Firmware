@@ -2,9 +2,10 @@
 #include <MFBoards.h>
 #include <Wire.h>
 
-#include "ExpanderButtonNames.h"
 #include "CmdMessenger.h"
+#include "ExpanderButtonNames.h"
 #include "ExpanderManager.h"
+#include "MFButton.h"
 #include "LEDMatrix.h"
 #include "MFEEPROM.h"
 #include "mobiflight.h"
@@ -35,8 +36,16 @@ constexpr uint8_t BRIGHTNESS_PIN = ExpanderButtonNames::ButtonCount;
 // Other defines.
 constexpr unsigned long POWER_SAVING_TIME_SECS = 60 * 60; // One hour (60 minutes * 60 seconds).
 constexpr unsigned long PRESS_AND_HOLD_LENGTH_MS = 500;   // Length of time a key must be held for a long press.
+constexpr unsigned long BUTTON_DEBOUNCE_LENGTH_MS = 10;   // Number of milliseconds between checking for button presses.
 
+// MF-style devices
+constexpr uint8_t MAX_BUTTONS = 5;
+MFButton buttons[MAX_BUTTONS];
+uint8_t buttonsRegistered = 0;
+
+// State variables
 unsigned long lastButtonPress = 0;
+unsigned long lastButtonUpdate = 0;
 bool powerSavingMode = false;
 
 CmdMessenger cmdMessenger = CmdMessenger(Serial);
@@ -348,6 +357,45 @@ void CheckForPowerSave()
 }
 
 /**
+ * @brief Creates the MF-style buttons and encoders.
+ *
+ */
+void AddMFDevices()
+{
+  buttons[0] = MFButton(PIN_LEFT, F("LEFT"));
+  buttons[1] = MFButton(PIN_RIGHT, F("RIGHT"));
+  buttons[2] = MFButton(PIN_UP, F("UP"));
+  buttons[3] = MFButton(PIN_DOWN, F("DOWN"));
+  buttons[4] = MFButton(PIN_CTR, F("CTR"));
+  MFButton::AttachHandler(HandlerOnButton);
+}
+
+/**
+ * @brief Handles events from MF-style buttons
+ *
+ * @param eventId Whether the event is OnPress or OnRelease.
+ * @param pin The button pin that fired the event.
+ * @param name The name of the button that fired the event.
+ */
+void HandlerOnButton(uint8_t eventId, uint8_t pin, const __FlashStringHelper *name)
+{
+  cmdMessenger.sendCmdStart(kButtonChange);
+  cmdMessenger.sendCmdArg(name);
+  cmdMessenger.sendCmdArg(eventId);
+  cmdMessenger.sendCmdEnd();
+
+  lastButtonPress = millis();
+};
+
+void readButtons()
+{
+  for (int i = 0; i != MAX_BUTTONS; i++)
+  {
+    buttons[i].Update();
+  }
+}
+
+/**
  * @brief Android initialization method.
  *
  */
@@ -362,6 +410,7 @@ void setup()
   cmdMessenger.printLfCr();
 
   OnResetBoard();
+  AddMFDevices();
   mcp1.Init();
   mcp2.Init();
   ledMatrix.Init();
@@ -376,8 +425,17 @@ void setup()
 void loop()
 {
   cmdMessenger.feedinSerialData();
-  mcp1.Loop();
-  mcp2.Loop();
+
+  // Buttons aren't checked every pass through the loop to
+  // handle button bouncing.
+  if (millis() - lastButtonUpdate >= BUTTON_DEBOUNCE_LENGTH_MS)
+  {
+    mcp1.Loop();
+    mcp2.Loop();
+    readButtons();
+    lastButtonUpdate = millis();
+  }
+
   CheckForPowerSave();
   ledMatrix.Loop();
 }
