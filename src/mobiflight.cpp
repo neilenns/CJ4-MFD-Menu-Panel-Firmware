@@ -164,9 +164,9 @@ void OnButtonPress(ButtonState state, uint8_t deviceAddress, uint8_t button)
     button += 16;
   }
 
-  // The three mem buttons only send release events, and they are either regular or
-  // long press.
-  if (((button == 6) || (button == 20) || (button == 28)))
+  // The data button and three mem buttons only send release events, and they are
+  // either regular or long press.
+  if (((button == 0) || (button == 6) || (button == 20) || (button == 28)))
   {
     if (state == ButtonState::Pressed)
     {
@@ -202,7 +202,7 @@ void OnButtonPress(ButtonState state, uint8_t deviceAddress, uint8_t button)
   // names.
   if (isLongPress)
   {
-    index += 3;
+    index += 4;
   }
 
   // Get the button name from flash using the index.
