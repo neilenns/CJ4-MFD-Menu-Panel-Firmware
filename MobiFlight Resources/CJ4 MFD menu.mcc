@@ -307,12 +307,24 @@
       </settings>
     </config>
     <config guid="eb905306-d75e-4eef-9a76-820e875d1fc2">
-      <active>false</active>
+      <active>true</active>
       <description>DATA - Short</description>
-      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.2.0.2, Culture=neutral, PublicKeyToken=null" serial="CJ4 MFD panel/ SN-6f2-f0c" name="E_BTN" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.2.0.2, Culture=neutral, PublicKeyToken=null" serial="CJ4 MFD panel/ SN-6f2-f0c" name="DATA" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
         <button>
-          <onPress type="MSFS2020EventIdInputAction" eventId="Generic_Lwr_DATA_PUSH" />
-          <onRelease />
+          <onPress />
+          <onRelease type="MSFS2020EventIdInputAction" eventId="Generic_Lwr_DATA_PUSH" />
+        </button>
+        <preconditions />
+        <configrefs />
+      </settings>
+    </config>
+    <config guid="e7b5f660-73a5-46d1-82cb-0e9053709ba4">
+      <active>true</active>
+      <description>DATA - Long</description>
+      <settings msdata:InstanceType="MobiFlight.InputConfigItem, MFConnector, Version=9.2.0.2, Culture=neutral, PublicKeyToken=null" serial="CJ4 MFD panel/ SN-6f2-f0c" name="DATA_LONG" type="Button" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <button>
+          <onPress />
+          <onRelease type="MSFS2020EventIdInputAction" eventId="Generic_Lwr_DATA_PUSH_LONG" />
         </button>
         <preconditions />
         <configrefs />
