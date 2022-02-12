@@ -28,7 +28,6 @@ private:
   ExpanderEvent _buttonHandler;
   volatile DetectionState _currentState = DetectionState::WaitingForPress;
   uint8_t _deviceAddress;
-  unsigned long _lastPressEventTime;
 
   MCP23017 *_mcp;
 

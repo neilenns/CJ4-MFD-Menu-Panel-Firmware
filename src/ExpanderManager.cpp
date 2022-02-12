@@ -10,7 +10,7 @@ constexpr unsigned long PRESS_AND_HOLD_LENGTH_MS = 500; // Length of time a key 
 // Helper function to write a 16 bit value out as bits for debugging purposes.
 void write16AsBits(uint16_t value)
 {
-  for (int i = 0; i < 8; i++)
+  for (auto i = 0; i < 8; i++)
   {
     bool b = value & 0x8000;
     Serial.print(b);
@@ -18,7 +18,7 @@ void write16AsBits(uint16_t value)
   }
 
   Serial.print(" ");
-  for (int i = 0; i < 8; i++)
+  for (auto i = 0; i < 8; i++)
   {
     bool b = value & 0x8000;
     Serial.print(b);
@@ -29,7 +29,7 @@ void write16AsBits(uint16_t value)
 // Helper function to write an 8 bit value out as bits for debugging purposes.
 void write8AsBits(uint8_t value)
 {
-  for (int i = 0; i < 8; i++)
+  for (auto i = 0; i < 8; i++)
   {
     bool b = value & 0x80;
     Serial.print(b);
@@ -67,27 +67,27 @@ int ExpanderManager::GetBitPosition(uint16_t value)
 }
 
 /**
- * @brief initializes the keyboard matrix.
+ * @brief Initializes the port expander.
  *
  */
 void ExpanderManager::Init()
 {
   _mcp->init();
 
-  _mcp->writeRegister(MCP23017Register::IODIR_A, 0xFF, 0xFF); // All as input
-  _mcp->writeRegister(MCP23017Register::GPIO_A, 0xFF, 0xFF);  // Reset all to 1s
-  _mcp->writeRegister(MCP23017Register::GPPU_A, 0xFF, 0xFF);  // Turn on pull up resistors
+  _mcp->writeRegister(MCP23017Register::IODIR_A, 0xFF, 0xFF); // All as input.
+  _mcp->writeRegister(MCP23017Register::GPIO_A, 0xFF, 0xFF);  // Reset all to 1s.
+  _mcp->writeRegister(MCP23017Register::GPPU_A, 0xFF, 0xFF);  // Turn on pull up resistors.
 
   _currentState = DetectionState::WaitingForPress;
 }
 
 /**
- * @brief Determines which button is currently pressed when a row changed interrupt fires.
+ * @brief Determines which button is currently pressed.
  *
  */
 void ExpanderManager::CheckForButton()
 {
-  uint16_t buttonStates = _mcp->read();
+  auto buttonStates = _mcp->read();
 
   // If nothing is pressed then just return
   if (buttonStates == 0xFFFF)
@@ -107,9 +107,6 @@ void ExpanderManager::CheckForButton()
 
   _buttonHandler(ButtonState::Pressed, _deviceAddress, _activeButton);
 
-  // Save when the press event happened for debouncing purposes.
-  _lastPressEventTime = millis();
-
   _currentState = WaitingForRelease;
 }
 
@@ -119,13 +116,9 @@ void ExpanderManager::CheckForButton()
  */
 void ExpanderManager::CheckForRelease()
 {
-  uint16_t buttonStates;
+  auto buttonStates = _mcp->read();
 
-  // Read the row state to see if the button was released. This has the side effect
-  // of clearing the interrupt if the triggering pin reset as well.
-  buttonStates = _mcp->read();
-
-  // If all the inputs for the row are back to 1s then the button was released
+  // If all the inputs are back to 1s then the button was released.
   if (buttonStates == 0xFFFF)
   {
 #ifdef DEBUG
@@ -142,7 +135,7 @@ void ExpanderManager::CheckForRelease()
 
 void ExpanderManager::Loop()
 {
-  // Fininte state machine for button detection
+  // Fininte state machine for button detection.
   switch (_currentState)
   {
   case WaitingForPress:
