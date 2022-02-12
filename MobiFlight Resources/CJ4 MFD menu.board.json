@@ -156,7 +156,7 @@
     {
       "isAnalog": false,
       "isI2C": false,
-      "Pin": 24
+      "Pin": 99
     },
     {
       "isAnalog": false,

@@ -28,29 +28,24 @@ char serial[MEM_LEN_SERIAL];
 constexpr uint8_t MCP1_I2C_ADDRESS = 0x20; // Address for first MCP23017.
 constexpr uint8_t MCP2_I2C_ADDRESS = 0x21; // Address for second MCP23017.
 
-// Virtual pins for one-off MobiFlight "modules". Their pins
-// start after all the keyboard matrix buttons, of which there are
-// ExpanderButtonNames::ButtonCount. Since it's origin zero the next free pin
-// is simply that value.
-constexpr uint8_t BRIGHTNESS_PIN = ExpanderButtonNames::ButtonCount;
-
-// Other defines.
-constexpr unsigned long POWER_SAVING_TIME_SECS = 60 * 60; // One hour (60 minutes * 60 seconds).
+// Time durations.
+constexpr unsigned long POWER_SAVING_TIME_SECS = 60 * 60; // Inactivity timeout for LEDs. One hour (60 minutes * 60 seconds).
 constexpr unsigned long PRESS_AND_HOLD_LENGTH_MS = 500;   // Length of time a key must be held for a long press.
 constexpr unsigned long BUTTON_DEBOUNCE_LENGTH_MS = 10;   // Number of milliseconds between checking for button presses.
 
-// MF-style devices
+// MobiFlight-style devices.
 constexpr uint8_t MAX_BUTTONS = 5;
 MFButton buttons[MAX_BUTTONS];
 
 constexpr uint8_t MAX_ENCODERS = 2;
 MFEncoder encoders[MAX_ENCODERS];
 
-// State variables
+// State variables.
 unsigned long lastButtonPress = 0;
 unsigned long lastButtonUpdate = 0;
-bool powerSavingMode = false;
+auto powerSavingMode = false;
 
+// Communication & device controller variables.
 CmdMessenger cmdMessenger = CmdMessenger(Serial);
 MFEEPROM MFeeprom;
 ExpanderManager mcp1(MCP1_I2C_ADDRESS, OnButtonPress);
@@ -148,14 +143,13 @@ void generateSerial(bool force)
 /**
  * @brief Callback for handling a button press from a connected MCP.
  *
- * @param state State of the button (pressed or released)
- * @param deviceAddress The I2C address of the MCP that detected the button event
- * @param button The index of the button pressed on the MCP
- * @param column Column of the button
+ * @param state State of the button (pressed or released).
+ * @param deviceAddress The I2C address of the MCP that detected the button event.
+ * @param button The index of the button pressed on the MCP.
  */
 void OnButtonPress(ButtonState state, uint8_t deviceAddress, uint8_t button)
 {
-  bool isLongPress = false;
+  auto isLongPress = false;
 
   // If the button was pushed on the second MCP then its button address
   // needs to have 16 added to it before doing the button name lookup.
@@ -166,8 +160,15 @@ void OnButtonPress(ButtonState state, uint8_t deviceAddress, uint8_t button)
 
   // The data button and three mem buttons only send release events, and they are
   // either regular or long press.
+  // 0 is DATA
+  // 6 is MEM_1
+  // 20 is MEM_3
+  // 28 is MEM_2
   if (((button == 0) || (button == 6) || (button == 20) || (button == 28)))
   {
+    // On the press event for these special case buttons just remember
+    // when the press happened so the length of the press can be calculated
+    // on release.
     if (state == ButtonState::Pressed)
     {
       lastButtonPress = millis();
@@ -181,24 +182,23 @@ void OnButtonPress(ButtonState state, uint8_t deviceAddress, uint8_t button)
     }
   }
 
-  // While the keyboard matrix provides a button location that has to
+  // The keyboard matrix provides a button location that has to
   // be mapped to a button name to send the correct event to MobiFlight.
-  // The button names are in a 1D array and the keyboard matrix is sparse
-  // so a lookup table is used to get the correct index into the name array
-  // for a given button in the keyboard matrix.
-  char buttonName[ExpanderButtonNames::MaxNameLength] = "";
-  uint8_t index = pgm_read_byte(&(ExpanderButtonNames::ButtonLUT[button]));
+  // The button names are in a 1D array and the pin mapping on the MCPs is
+  // sparse so a lookup table is used to get the correct index into the name
+  // array for a given pin on the MCP.
+  auto index = pgm_read_byte(&(ExpanderButtonNames::ButtonLUT[button]));
 
-  // If the lookup table returns 255 then it's a row/column that shouldn't
-  // ever fire because it's a non-existent button.
+  // If the lookup table returns 255 then it's a pin that shouldn't
+  // ever fire because it's not connected to anything.
   if (index == 255)
   {
-    cmdMessenger.sendCmd(kStatus, "Row/column isn't a valid button");
+    cmdMessenger.sendCmd(kStatus, "Pin isn't a valid button");
     return;
   }
 
   // The way the names are stored in the list the long press
-  // button names are three farther down from the short press
+  // button names are four farther down from the short press
   // names.
   if (isLongPress)
   {
@@ -206,6 +206,7 @@ void OnButtonPress(ButtonState state, uint8_t deviceAddress, uint8_t button)
   }
 
   // Get the button name from flash using the index.
+  char buttonName[ExpanderButtonNames::MaxNameLength] = "";
   strcpy_P(buttonName, (char *)pgm_read_word(&(ExpanderButtonNames::Names[index])));
 
   // Send the button name and state to MobiFlight.
@@ -258,7 +259,6 @@ void OnGetInfo()
  */
 void OnGetConfig()
 {
-  auto i = 0;
   char singleModule[20] = "";
   char pinName[ExpanderButtonNames::MaxNameLength] = "";
 
@@ -267,7 +267,7 @@ void OnGetConfig()
 
   // Send configuration for all the buttons. The virtual pins for the two MCP
   // expansions start at 100 to avoid overlapping with the standard Arduino pins.
-  for (i = 0; i < ExpanderButtonNames::ButtonCount; i++)
+  for (auto i = 0; i < ExpanderButtonNames::ButtonCount; i++)
   {
     // Get the pin name from flash
     strcpy_P(pinName, (char *)pgm_read_word(&(ExpanderButtonNames::Names[i])));
@@ -276,9 +276,9 @@ void OnGetConfig()
     cmdMessenger.sendArg(singleModule);
   }
 
-  // Send configuration for the LED brightness output. 24 is the
+  // Send configuration for the LED brightness output. 99 is the
   // value of BRIGHTNESS_PIN.
-  cmdMessenger.sendArg(F("3.24.Brightness:"));
+  cmdMessenger.sendArg(F("3.99.Brightness:"));
 
   // Send configuration five-way controller. The pin numbers are defined in
   // PinAssignments.h but to save flash everything is brute force hard coded
@@ -289,7 +289,7 @@ void OnGetConfig()
   cmdMessenger.sendArg(F("1.19.DOWN:"));
   cmdMessenger.sendArg(F("1.18.CTR:"));
 
-  // Send configuration for the dual encoders. The 0 is the encoder type.
+  // Send configuration for the dual encoders. The 1 is the encoder type.
   cmdMessenger.sendArg(F("8.8.5.1.ENC_1:"));
   cmdMessenger.sendArg(F("8.9.10.1.ENC_2:"));
 
@@ -302,9 +302,9 @@ void OnGetConfig()
  */
 void OnSetPin()
 {
-  // Read led state argument, interpret string as boolean
-  int pin = cmdMessenger.readInt16Arg();
-  int state = cmdMessenger.readInt16Arg();
+  // Read led state argument, interpret string as boolean.
+  auto pin = cmdMessenger.readInt16Arg();
+  auto state = cmdMessenger.readInt16Arg();
 
   // The brightness virtual pin is 69
   if (pin == BRIGHTNESS_PIN)
@@ -334,7 +334,6 @@ void OnGenNewSerial()
 void OnSetName()
 {
   cmdMessenger.readStringArg();
-
   cmdMessenger.sendCmdStart(MFMessage::kStatus);
   cmdMessenger.sendCmdArg(MOBIFLIGHT_NAME);
   cmdMessenger.sendCmdEnd();
@@ -360,7 +359,7 @@ void CheckForPowerSave()
 }
 
 /**
- * @brief Creates the MF-style buttons and encoders.
+ * @brief Creates the MobiFlight-style buttons and encoders.
  *
  */
 void AddMFDevices()
@@ -372,13 +371,13 @@ void AddMFDevices()
   buttons[4] = MFButton(PIN_CTR, F("CTR"));
   MFButton::AttachHandler(HandlerOnButton);
 
-  encoders[0] = MFEncoder(PIN_B, PIN_A, 1, F("ENC_1"));
-  encoders[1] = MFEncoder(PIN_B_PRIME, PIN_A_PRIME, 1, F("ENC_2"));
+  encoders[0] = MFEncoder(PIN_A, PIN_B, 1, F("ENC_1"));
+  encoders[1] = MFEncoder(PIN_A_PRIME, PIN_B_PRIME, 1, F("ENC_2"));
   MFEncoder::attachHandler(HandlerOnEncoder);
 }
 
 /**
- * @brief Handles events from MF-style buttons
+ * @brief Handles events from MobiFlight-style buttons.
  *
  * @param eventId Whether the event is OnPress or OnRelease.
  * @param pin The button pin that fired the event.
@@ -410,24 +409,24 @@ void HandlerOnEncoder(uint8_t eventId, uint8_t pin, const __FlashStringHelper *n
 };
 
 /**
- * @brief Loops through the MF-style buttons to check for button events.
+ * @brief Loops through the MobiFlight-style buttons to check for button events.
  *
  */
 void ReadButtons()
 {
-  for (int i = 0; i != MAX_BUTTONS; i++)
+  for (auto i = 0; i != MAX_BUTTONS; i++)
   {
     buttons[i].Update();
   }
 }
 
 /**
- * @brief Loops through MF-style encoders to check for encoder events.
+ * @brief Loops through MobiFlight-style encoders to check for encoder events.
  *
  */
 void ReadEncoders()
 {
-  for (int i = 0; i != MAX_ENCODERS; i++)
+  for (auto i = 0; i != MAX_ENCODERS; i++)
   {
     encoders[i].Update();
   }
@@ -454,6 +453,7 @@ void setup()
   ledMatrix.Init();
 
   lastButtonPress = millis();
+  lastButtonUpdate = millis();
 }
 
 /**
