@@ -49,12 +49,12 @@ ISR(WDT_vect)
 
 /**
  * @brief Read a buffer of data from the specified register.
- * 
+ *
  * @param i2c_addr I2C address of the device to read the data from.
  * @param reg_addr Address of the register to read from.
  * @param buffer Buffer to read the data into.
  * @param length Length of the buffer.
- * @return uint8_t 
+ * @return uint8_t
  */
 uint8_t i2c_read_reg(const uint8_t i2c_addr, const uint8_t reg_addr, uint8_t *buffer, const uint8_t length)
 {
@@ -62,7 +62,7 @@ uint8_t i2c_read_reg(const uint8_t i2c_addr, const uint8_t reg_addr, uint8_t *bu
   Wire.write(reg_addr);
   Wire.endTransmission();
   byte bytesRead = Wire.requestFrom(i2c_addr, length);
-  for (int i = 0; i < bytesRead && i < length; i++)
+  for (auto i = 0; i < bytesRead && i < length; i++)
   {
     buffer[i] = Wire.read();
   }
@@ -71,7 +71,7 @@ uint8_t i2c_read_reg(const uint8_t i2c_addr, const uint8_t reg_addr, uint8_t *bu
 
 /**
  * @brief Writes a buffer to the specified register.
- * 
+ *
  * @param i2c_addr I2C address of the device to write the data to.
  * @param reg_addr Address of the register to write to.
  * @param buffer Pointer to an array of bytes to write.
@@ -90,7 +90,7 @@ uint8_t i2c_write_reg(const uint8_t i2c_addr, const uint8_t reg_addr, const uint
 
 /**
  * @brief Construct a new LEDMatrix::LEDMatrix object
- * 
+ *
  * @param addr1 Connection on addr1 pin.
  * @param addr2 Connection on addr2 pin.
  * @param sdbPin Adruino pin connected to SDB.
@@ -111,7 +111,7 @@ void LEDMatrix::HandleInterrupt()
 
 /**
  * @brief Sets the IC PWM for all LEDs to the specified brightness.
- * 
+ *
  * @param brightness The brightness to use.
  */
 void LEDMatrix::SetBrightness(uint8_t brightness)
@@ -121,7 +121,7 @@ void LEDMatrix::SetBrightness(uint8_t brightness)
 
 /**
  * @brief Turns power save mode on or off.
- * 
+ *
  * @param state True to turn power save mode on, false to turn it off.
  */
 void LEDMatrix::SetPowerSaveMode(bool state)
@@ -131,7 +131,7 @@ void LEDMatrix::SetPowerSaveMode(bool state)
 
 /**
  * @brief Arduino initialization.
- * 
+ *
  */
 void LEDMatrix::Init()
 {
@@ -150,9 +150,9 @@ void LEDMatrix::Init()
 
   // Randomly assign one of the three ABM patterns to each button
   CreateTrulyRandomSeed();
-  for (int i = 0; i < CS_LINES; i++)
+  for (auto i = 0; i < CS_LINES; i++)
   {
-    for (int j = 0; j < SW_LINES; j++)
+    for (auto j = 0; j < SW_LINES; j++)
     {
       _driver->SetLEDSingleMode(i, j, static_cast<LED_MODE>(random(1, 3)));
     }
@@ -212,7 +212,7 @@ void LEDMatrix::Loop()
   case LedState::ABMComplete:
   {
     // Read the interrupt status to force the interrupt to clear.
-    uint8_t interruptStatus = _driver->ReadCommonReg(COMMONREGISTER::ISR);
+    auto interruptStatus = _driver->ReadCommonReg(COMMONREGISTER::ISR);
 
     // Check and see if ABM1 is the ABM that finished.
     if (interruptStatus & ISR_ABM1)
