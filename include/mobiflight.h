@@ -16,9 +16,12 @@ enum MFDevice
 // in CmdMessenger.h is set apropriately
 enum MFMessage
 {
-  kInitModule = 0,          // 0
-  kSetModule = 1,           // 1
-  kSetPin = 2,              // 2
+  kInitModule = 0, // 0
+  kSetModule = 1,  // 1
+  kSetPin = 2,     // 2
+#ifdef DEBUG
+  kGenerateConfig = 3, // 3
+#endif
   kStatus = 5,              // 5
   kEncoderChange = 6,       // 6
   kButtonChange = 7,        // 7
@@ -61,3 +64,7 @@ void readConfig();
 void SendOk();
 void SetPowerSavingMode(bool state);
 void updatePowerSaving();
+
+#ifdef DEBUG
+void OnGenerateConfig();
+#endif

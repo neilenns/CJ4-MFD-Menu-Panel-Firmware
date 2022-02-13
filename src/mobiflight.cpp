@@ -71,6 +71,9 @@ void attachCommandCallbacks()
   cmdMessenger.attach(MFMessage::kGenNewSerial, OnGenNewSerial);
   cmdMessenger.attach(MFMessage::kTrigger, SendOk);
   cmdMessenger.attach(MFMessage::kResetBoard, OnResetBoard);
+#ifdef DEBUG
+  cmdMessenger.attach(MFMessage::kGenerateConfig, OnGenerateConfig);
+#endif
 }
 
 /**
@@ -252,12 +255,12 @@ void OnGetInfo()
   cmdMessenger.sendCmdEnd();
 }
 
+#ifdef DEBUG
 /**
- * @brief Callback for sending module configuration to MobiFlight.
- * The module configuration is generated on the fly rather than being stored in EEPROM.
- *
+ * @brief Generates the configuration string so it can be copied and pasted as a hardcoded string
+ * in OnGetConfig().
  */
-void OnGetConfig()
+void OnGenerateConfig()
 {
   char singleModule[20] = "";
   char pinName[ExpanderButtonNames::MaxNameLength] = "";
@@ -293,6 +296,20 @@ void OnGetConfig()
   cmdMessenger.sendArg(F("8.8.5.1.ENC_1:"));
   cmdMessenger.sendArg(F("8.9.10.1.ENC_2:"));
 
+  cmdMessenger.sendCmdEnd();
+}
+#endif
+
+/**
+ * @brief Callback for sending module configuration to MobiFlight.
+ * The module configuration is generated on the fly rather than being stored in EEPROM.
+ *
+ */
+void OnGetConfig()
+{
+  cmdMessenger.sendCmdStart(MFMessage::kInfo);
+  cmdMessenger.sendFieldSeparator();
+  cmdMessenger.sendArg(F("1.100.RADAR_MENU:1.101.LWR_MENU:1.102.UPR_MENU:1.103.ESC:1.104.DATABASE:1.105.NAV_DATA:1.106.CAS_PAGE:1.107.CHART:1.108.CRSR:1.109.PASS_BRIEF:1.110.SYS:1.111.CKLIST:1.112.TFC:1.113.TERR_WX:1.114.ENG:1.115.ZOOM_PLUS:1.116.ZOOM_MINUS:1.117.MEM_1:1.118.MEM_2:1.119.MEM_3:1.120.DATA:1.121.MEM_1_LONG:1.122.MEM_2_LONG:1.123.MEM_3_LONG:1.124.DATA_LONG:3.99.Brightness:1.20.RIGHT:1.22.LEFT:1.21.UP:1.19.DOWN:1.18.CTR:8.8.5.1.ENC_1:8.9.10.1.ENC_2:"));
   cmdMessenger.sendCmdEnd();
 }
 
