@@ -102,6 +102,8 @@ void ExpanderManager::CheckForButton()
 #ifdef DEBUG
   Serial.print("Detected press at: ");
   Serial.print(_activeButton);
+  Serial.print(" on expander: ");
+  Serial.print(_deviceAddress);
   Serial.println();
 #endif
 
@@ -124,6 +126,8 @@ void ExpanderManager::CheckForRelease()
 #ifdef DEBUG
     Serial.print("Detected release at: ");
     Serial.print(_activeButton);
+    Serial.print(" on expander: ");
+    Serial.print(_deviceAddress);
     Serial.println();
 #endif
 

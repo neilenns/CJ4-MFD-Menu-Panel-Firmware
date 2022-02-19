@@ -161,6 +161,11 @@ void OnButtonPress(ButtonState state, uint8_t deviceAddress, uint8_t button)
     button += 16;
   }
 
+#ifdef DEBUG
+  Serial.print("Button: ");
+  Serial.println(button);
+#endif
+                                              
   // The data button and three mem buttons only send release events, and they are
   // either regular or long press.
   // 0 is DATA

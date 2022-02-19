@@ -26,7 +26,7 @@ class ExpanderManager
 private:
   uint8_t _activeButton = 0;
   ExpanderEvent _buttonHandler;
-  volatile DetectionState _currentState = DetectionState::WaitingForPress;
+  DetectionState _currentState = DetectionState::WaitingForPress;
   uint8_t _deviceAddress;
 
   MCP23017 *_mcp;
