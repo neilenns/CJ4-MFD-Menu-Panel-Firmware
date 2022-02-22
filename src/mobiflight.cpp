@@ -1,5 +1,4 @@
 #include <Arduino.h>
-#include <MFBoards.h>
 #include <Wire.h>
 
 #include "CmdMessenger.h"
@@ -20,24 +19,24 @@
 // MobiFlight expects a board name, type, and serial number to come from the board
 // when requested. The serial number is stored in flash. The board type
 // and name are fixed and come from Board.h.
-constexpr uint8_t MEM_OFFSET_SERIAL = 0;
-constexpr uint8_t MEM_LEN_SERIAL = 11;
+static constexpr uint8_t MEM_OFFSET_SERIAL = 0;
+static constexpr uint8_t MEM_LEN_SERIAL = 11;
 char serial[MEM_LEN_SERIAL];
 
 // I2C Addresses for the IO expanders.
-constexpr uint8_t MCP1_I2C_ADDRESS = 0x20; // Address for first MCP23017.
-constexpr uint8_t MCP2_I2C_ADDRESS = 0x21; // Address for second MCP23017.
+static constexpr uint8_t MCP1_I2C_ADDRESS = 0x20; // Address for first MCP23017.
+static constexpr uint8_t MCP2_I2C_ADDRESS = 0x21; // Address for second MCP23017.
 
 // Time durations.
-constexpr unsigned long POWER_SAVING_TIME_SECS = 60 * 60; // Inactivity timeout for LEDs. One hour (60 minutes * 60 seconds).
-constexpr unsigned long PRESS_AND_HOLD_LENGTH_MS = 500;   // Length of time a key must be held for a long press.
-constexpr unsigned long BUTTON_DEBOUNCE_LENGTH_MS = 10;   // Number of milliseconds between checking for button presses.
+static constexpr unsigned long POWER_SAVING_TIME_SECS = 60 * 60; // Inactivity timeout for LEDs. One hour (60 minutes * 60 seconds).
+static constexpr unsigned long PRESS_AND_HOLD_LENGTH_MS = 500;   // Length of time a key must be held for a long press.
+static constexpr unsigned long BUTTON_DEBOUNCE_LENGTH_MS = 10;   // Number of milliseconds between checking for button presses.
 
 // MobiFlight-style devices.
-constexpr uint8_t MAX_BUTTONS = 5;
+static constexpr uint8_t MAX_BUTTONS = 5;
 MFButton buttons[MAX_BUTTONS];
 
-constexpr uint8_t MAX_ENCODERS = 2;
+static constexpr uint8_t MAX_ENCODERS = 2;
 MFEncoder encoders[MAX_ENCODERS];
 
 // State variables.
@@ -165,7 +164,7 @@ void OnButtonPress(ButtonState state, uint8_t deviceAddress, uint8_t button)
   Serial.print("Button: ");
   Serial.println(button);
 #endif
-                                              
+
   // The data button and three mem buttons only send release events, and they are
   // either regular or long press.
   // 0 is DATA
@@ -253,8 +252,8 @@ void OnUnknownCommand()
 void OnGetInfo()
 {
   cmdMessenger.sendCmdStart(MFMessage::kInfo);
-  cmdMessenger.sendCmdArg(MOBIFLIGHT_TYPE);
-  cmdMessenger.sendCmdArg(MOBIFLIGHT_NAME);
+  cmdMessenger.sendCmdArg(F("CJ4 MFD panel"));
+  cmdMessenger.sendCmdArg(F("CJ4 MFD panel"));
   cmdMessenger.sendCmdArg(serial);
   cmdMessenger.sendCmdArg(VERSION);
   cmdMessenger.sendCmdEnd();
@@ -312,7 +311,7 @@ void OnGenerateConfig()
  */
 void OnGetConfig()
 {
-  Serial.println("10,1.100.RADAR_MENU:1.101.LWR_MENU:1.102.UPR_MENU:1.103.ESC:1.104.DATABASE:1.105.NAV_DATA:1.106.CAS_PAGE:1.107.CHART:1.108.CRSR:1.109.PASS_BRIEF:1.110.SYS:1.111.CKLIST:1.112.TFC:1.113.TERR_WX:1.114.ENG:1.115.ZOOM_PLUS:1.116.ZOOM_MINUS:1.117.MEM_1:1.118.MEM_2:1.119.MEM_3:1.120.DATA:1.121.MEM_1_LONG:1.122.MEM_2_LONG:1.123.MEM_3_LONG:1.124.DATA_LONG:3.99.Brightness:1.20.RIGHT:1.22.LEFT:1.21.UP:1.19.DOWN:1.18.CTR:8.8.5.1.ENC_1:8.9.10.1.ENC_2:;");
+  Serial.println("10,1.100.RADAR_MENU:1.101.LWR_MENU:1.102.UPR_MENU:1.103.ESC:1.104.DATABASE:1.105.NAV_DATA:1.106.CAS_PAGE:1.107.CHART:1.108.CRSR:1.109.PASS_BRIEF:1.110.SYS:1.111.CKLIST:1.112.TFC:1.113.TERR_WX:1.114.ENG:1.115.ZOOM_PLUS:1.116.ZOOM_MINUS:1.117.MEM_1:1.118.MEM_2:1.119.MEM_3:1.120.DATA:1.121.MEM_1_LONG:1.122.MEM_2_LONG:1.123.MEM_3_LONG:1.124.DATA_LONG:3.99.Brightness:1.20.RIGHT:1.22.LEFT:1.21.UP:1.19.DOWN:1.18.CTR:8.8.5.2.ENC_1:8.9.10.2.ENC_2:;");
 }
 
 /**
@@ -354,7 +353,7 @@ void OnSetName()
 {
   cmdMessenger.readStringArg();
   cmdMessenger.sendCmdStart(MFMessage::kStatus);
-  cmdMessenger.sendCmdArg(MOBIFLIGHT_NAME);
+  cmdMessenger.sendCmdArg(F("CJ4 MFD panel"));
   cmdMessenger.sendCmdEnd();
 }
 
@@ -390,8 +389,8 @@ void AddMFDevices()
   buttons[4] = MFButton(PIN_CTR, F("CTR"));
   MFButton::AttachHandler(HandlerOnButton);
 
-  encoders[0] = MFEncoder(PIN_A, PIN_B, 1, F("ENC_1"));
-  encoders[1] = MFEncoder(PIN_A_PRIME, PIN_B_PRIME, 1, F("ENC_2"));
+  encoders[0] = MFEncoder(PIN_A, PIN_B, 2, F("ENC_1"));
+  encoders[1] = MFEncoder(PIN_A_PRIME, PIN_B_PRIME, 2, F("ENC_2"));
   MFEncoder::attachHandler(HandlerOnEncoder);
 }
 

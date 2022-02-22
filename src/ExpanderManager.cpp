@@ -4,7 +4,7 @@
 
 #include "ExpanderManager.h"
 
-constexpr unsigned long PRESS_AND_HOLD_LENGTH_MS = 500; // Length of time a key must be held for a long press.
+static constexpr unsigned long PRESS_AND_HOLD_LENGTH_MS = 500; // Length of time a key must be held for a long press.
 
 #ifdef DEBUG
 // Helper function to write a 16 bit value out as bits for debugging purposes.
