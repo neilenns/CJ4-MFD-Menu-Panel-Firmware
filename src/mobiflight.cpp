@@ -329,6 +329,7 @@ void OnSetPin()
   {
     cmdMessenger.sendCmd(kStatus, "OK");
     ledMatrix.SetBrightness(state);
+    ledMatrix.SetPowerSaveMode(false);
   }
 }
 
